@@ -11,7 +11,7 @@ def ajouter_qlq():
         messagebox.showerror("Erreur", "Remplissez le champ !")
 
 tkt = tk.Tk()
-tkt.title("Python projet rapide")
+tkt.title("Random Team")
 tkt.geometry("900x700")
 
 frame = tk.Frame(tkt, pady=50)
@@ -31,7 +31,7 @@ nb.pack(side="left")
 nb_prsn = tk.Radiobutton(radio_bouton, text="Nombre de groupe")
 nb_prsn.pack(side="left", padx=20)
 
-zone_texte = tk.Text(tkt, height=20, width=80, state="disabled")  # Zone de texte multi-lignes
+zone_texte = tk.Text(tkt, height=20, width=80, state="disabled")  
 zone_texte.pack(pady=20)
 
 tkt.mainloop()
